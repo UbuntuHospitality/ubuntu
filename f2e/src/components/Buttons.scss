@@ -1,0 +1,38 @@
+.filled {
+    background-color: #ba3826;
+    color: white;
+    padding: 0.7rem 2rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+}
+
+.filled-pink {
+    @extend .filled;
+    background-color: #f1d8d4;
+    color: #ba3826;
+}
+
+.filled-dark {
+    @extend .filled;
+    background-color: #870c05;
+}
+
+.filled-white {
+    @extend .filled;
+    background-color: white;
+    color: #ba3826;
+}
+
+.filled-yellow {
+    @extend .filled;
+    background-color: #fff000;
+    color: #000000;
+}
+.outlined {
+    @extend .filled;
+    background-color: white;
+    color: #ba3826;
+    border: 2px solid #ba3826;
+}

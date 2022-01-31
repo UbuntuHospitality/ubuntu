@@ -1,0 +1,463 @@
+<template>
+  <ValidationObserver v-slot="{ handleSubmit }">
+    <SfHeading
+      v-e2e="'shipping-heading'"
+      :level="3"
+      :title="$t('Shipping')"
+      class="sf-heading--left sf-heading--no-underline title"
+    />
+    <AddressPicker
+      v-if="isAuthenticated && savedAddresses"
+      v-model="selectedSavedAddressId"
+      :addresses="savedAddresses.addresses"
+      :saved-address="checkoutShippingAddress"
+    />
+    <form @submit.prevent="handleSubmit(handleFormSubmit)">
+      <div v-if="!selectedSavedAddressId" class="form">
+        <ValidationProvider
+          v-if="!isAuthenticated"
+          name="email"
+          rules="required|email"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-model="form.email"
+            label="Email"
+            name="email"
+            class="form__element"
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="firstName"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-firstName'"
+            v-model="form.firstName"
+            label="First name"
+            name="firstName"
+            class="form__element form__element--half"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="lastName"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-lastName'"
+            v-model="form.lastName"
+            label="Last name"
+            name="lastName"
+            class="form__element form__element--half form__element--half-even"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="streetName"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-streetName'"
+            v-model="form.addressLine1"
+            label="Street name"
+            name="streetName"
+            class="form__element form__element--half"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="apartment"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-apartment'"
+            v-model="form.addressLine2"
+            label="House/Apartment number"
+            name="apartment"
+            class="form__element form__element--half form__element--half-even"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="city"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-city'"
+            v-model="form.city"
+            label="City"
+            name="city"
+            class="form__element"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          v-if="states && states.length > 0"
+          v-slot="{ errors }"
+          name="state"
+          rules="required"
+          slim
+        >
+          <SfSelect
+            data-cy="shipping-details-input_state"
+            class="form__element form form__select sf-select--underlined"
+            v-model="form.state"
+            name="state"
+            label="State/Province"
+            :required="isStateRequired"
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          >
+            <SfSelectOption
+              v-for="{ code, name } in states"
+              :key="code"
+              :value="name"
+            >
+              {{ name }}
+            </SfSelectOption>
+          </SfSelect>
+        </ValidationProvider>
+        <ValidationProvider
+          name="country"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfSelect
+            v-e2e="'shipping-country'"
+            v-model="form.country"
+            label="Country"
+            name="country"
+            class="form__element form__element--half form__select sf-select--underlined"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          >
+            <SfSelectOption
+              v-for="countryOption in countries"
+              :key="countryOption.key"
+              :value="countryOption.key"
+            >
+              {{ countryOption.label }}
+            </SfSelectOption>
+          </SfSelect>
+        </ValidationProvider>
+        <ValidationProvider
+          name="zipCode"
+          rules="required|min:2"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-zipcode'"
+            v-model="form.postalCode"
+            label="Zip-code"
+            name="zipCode"
+            class="form__element form__element--half form__element--half-even"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+        <ValidationProvider
+          name="phone"
+          rules="required|digits:9"
+          v-slot="{ errors }"
+          slim
+        >
+          <SfInput
+            v-e2e="'shipping-phone'"
+            v-model="form.phone"
+            label="Phone number"
+            name="phone"
+            class="form__element form__element--half"
+            required
+            :valid="!errors[0]"
+            :errorMessage="errors[0]"
+          />
+        </ValidationProvider>
+      </div>
+      <div class="form">
+        <div class="form__action">
+          <SfButton
+            v-if="!isFormSubmitted"
+            :disabled="loading"
+            class="form__action-button"
+            type="submit"
+          >
+            {{ $t('Select shipping method') }}
+          </SfButton>
+        </div>
+      </div>
+      <VsfShippingProvider
+        v-if="isFormSubmitted"
+        @submit="router.push(localePath({ name: 'billing' }))"
+      />
+    </form>
+  </ValidationObserver>
+</template>
+
+<script>
+import {
+  SfHeading,
+  SfInput,
+  SfButton,
+  SfSelect
+} from '@storefront-ui/vue';
+import { ref, watch, computed, onMounted, useRouter } from '@nuxtjs/composition-api';
+import { onSSR, useVSFContext } from '@vue-storefront/core';
+import { useShipping, useCountry, useUser, useUserShipping } from '@vue-storefront/spree';
+import { required, min, digits } from 'vee-validate/dist/rules';
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate';
+import AddressPicker from '~/components/Checkout/AddressPicker';
+import _ from 'lodash';
+
+extend('required', {
+  ...required,
+  message: 'This field is required'
+});
+extend('min', {
+  ...min,
+  message: 'The field should have at least {length} characters'
+});
+extend('digits', {
+  ...digits,
+  message: 'Please provide a valid phone number'
+});
+
+export default {
+  name: 'Shipping',
+  components: {
+    SfHeading,
+    SfInput,
+    SfButton,
+    SfSelect,
+    AddressPicker,
+    ValidationProvider,
+    ValidationObserver,
+    VsfShippingProvider: () => import('~/components/Checkout/VsfShippingProvider')
+  },
+  setup () {
+    const router = useRouter();
+    const isFormSubmitted = ref(false);
+    const { countries, states, load: loadCountries, loadStates } = useCountry();
+    const { shipping: checkoutShippingAddress, load, save, loading } = useShipping();
+    const { shipping: savedAddresses, load: loadSavedAddresses } = useUserShipping();
+    const { isAuthenticated } = useUser();
+    const { $spree } = useVSFContext();
+
+    const selectedSavedAddressId = ref(undefined);
+    const form = ref({
+      email: '',
+      firstName: '',
+      lastName: '',
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      country: '',
+      postalCode: '',
+      phone: null
+    });
+
+    const selectedSavedAddress = computed(() => {
+      if (!selectedSavedAddressId.value) {
+        return undefined;
+      }
+
+      return savedAddresses.value.addresses.find(e => e._id === selectedSavedAddressId.value);
+    });
+    const isStateRequired = computed(() => form.value.country && countries.value.find(e => e.key === form.value.country).stateRequired);
+
+    const handleFormSubmit = async () => {
+      if (!isAuthenticated.value) {
+        await $spree.api.saveGuestCheckoutEmail(form.value.email);
+      }
+
+      if (isAuthenticated.value && selectedSavedAddress.value) {
+        await save({ shippingDetails: selectedSavedAddress.value });
+      } else {
+        await save({ shippingDetails: form.value });
+      }
+
+      isFormSubmitted.value = true;
+    };
+
+    const isEqualAddress = (a, b) => {
+      const aWithoutId = _.omit(a, ['_id']);
+      const bWithoutId = _.omit(b, ['_id']);
+      return _.isEqual(aWithoutId, bWithoutId);
+    };
+
+    const populateSelectedAddressId = () => {
+      if (checkoutShippingAddress.value && savedAddresses.value?.addresses) {
+        selectedSavedAddressId.value = savedAddresses.value.addresses.find(e => isEqualAddress(e, checkoutShippingAddress.value))?._id;
+      }
+    };
+
+    onMounted(async () => {
+      await load();
+      await loadSavedAddresses();
+      await loadCountries();
+
+      if (form.value.country) {
+        await loadStates(form.value.country);
+      }
+
+      if (checkoutShippingAddress.value) {
+        form.value = _.omit(checkoutShippingAddress.value, ['_id']);
+      }
+
+      populateSelectedAddressId();
+    });
+
+    onSSR(async () => {
+      await load();
+      await loadSavedAddresses();
+      await loadCountries();
+
+      if (form.value.country) {
+        await loadStates(form.value.country);
+      }
+
+      if (checkoutShippingAddress.value) {
+        form.value = _.omit(checkoutShippingAddress.value, ['_id']);
+      }
+
+      populateSelectedAddressId();
+    });
+
+    watch(() => form.value.country, async (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        form.value.state = null;
+        await loadStates(newValue);
+      }
+    });
+
+    return {
+      router,
+      loading,
+      isFormSubmitted,
+      isAuthenticated,
+      isStateRequired,
+      form,
+      countries,
+      states,
+      savedAddresses,
+      selectedSavedAddressId,
+      checkoutShippingAddress,
+      handleFormSubmit
+    };
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.form {
+  --button-width: 100%;
+  &__select {
+    display: flex;
+    align-items: center;
+    --select-option-font-size: var(--font-size--lg);
+    ::v-deep .sf-select__dropdown {
+      font-size: var(--font-size--lg);
+      margin: 0;
+      color: var(--c-text);
+      font-family: var(--font-family--secondary);
+      font-weight: var(--font-weight--normal);
+    }
+  }
+  @include for-desktop {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    --button-width: auto;
+  }
+  &__element {
+    margin: 0 0 var(--spacer-xl) 0;
+    @include for-desktop {
+      flex: 0 0 100%;
+    }
+    &--half {
+      @include for-desktop {
+        flex: 1 1 50%;
+      }
+      &-even {
+        @include for-desktop {
+          padding: 0 0 0 var(--spacer-xl);
+        }
+      }
+    }
+  }
+  &__action {
+    @include for-desktop {
+      flex: 0 0 100%;
+      display: flex;
+    }
+  }
+  &__action-button {
+    &--secondary {
+      @include for-desktop {
+        order: -1;
+        text-align: left;
+      }
+    }
+    &--add-address {
+      width: 100%;
+      margin: 0;
+      @include for-desktop {
+        margin: 0 0 var(--spacer-lg) 0;
+        width: auto;
+      }
+    }
+  }
+  &__back-button {
+    margin: var(--spacer-xl) 0 var(--spacer-sm);
+    &:hover {
+      color:  var(--c-white);
+    }
+    @include for-desktop {
+      margin: 0 var(--spacer-xl) 0 0;
+    }
+  }
+}
+
+.shipping {
+  &__label {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__description {
+    --radio-description-margin: 0;
+    --radio-description-font-size: var(--font-xs);
+  }
+}
+
+.title {
+  margin: var(--spacer-xl) 0 var(--spacer-base) 0;
+}
+</style>

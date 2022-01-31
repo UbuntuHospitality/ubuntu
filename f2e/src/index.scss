@@ -1,0 +1,273 @@
+// remove input outline on clicking
+input {
+    border: 0;
+    &:active,
+    &:focus {
+        outline: none;
+    }
+}
+
+li {
+    list-style: none;
+}
+
+.rounded-4 {
+    border-radius: 0.5rem;
+}
+
+.rounded-5 {
+    border-radius: 1rem;
+}
+
+.rounded-start-5 {
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
+}
+
+.rounded-6 {
+    border-radius: 2rem;
+}
+
+.rounded-bottom-6 {
+    border-bottom-left-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+}
+
+// Background colors
+.bg-red {
+    background-color: #ba3826;
+}
+
+.bg-gray-2 {
+    background-color: #f0f0f1 !important;
+}
+
+.bg-pink {
+    background-color: #f8ebe9;
+}
+
+.bg-pink-2 {
+    background-color: #f7eae8;
+}
+
+.bg-pink-3 {
+    background-color: #f6e7e5;
+}
+
+.bg-yellow {
+    background-color: #fff000;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+// Text colors
+.text-gray {
+    color: #6d6e73;
+}
+
+.text-red,
+.text-red:hover {
+    color: #ba3826;
+}
+
+.border-red {
+    border: 1px solid #ba3826;
+}
+
+.border-red-bottom {
+    border-bottom: 3px solid #ba3826;
+}
+
+.border-light-red-bottom {
+    border-bottom: 2px solid #f3ddda;
+}
+
+.btn-left {
+    position: relative;
+    left: -1rem;
+}
+
+.section-top {
+    top: -2rem;
+}
+
+.section-top-2 {
+    top: -4rem;
+}
+
+.section-top-3 {
+    top: -6rem;
+}
+
+input[type='checkbox'] {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #ba3826;
+    outline: none;
+    box-shadow: 0 0 5px 4px rgb(255, 255, 255) inset;
+
+    &:checked {
+        background-color: #ba3826;
+    }
+}
+
+.cards-position {
+    position: absolute;
+    top: -4rem;
+    @media only screen and (max-width: 992px) {
+        position: relative;
+        top: 0;
+    }
+}
+
+.section-height {
+    height: 48rem;
+}
+
+.bg-image {
+    background: linear-gradient(to left, #f8ebe9, transparent),
+        url('./assets/sample4.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+}
+.bg-image-home {
+    background: linear-gradient(270deg, #f8ebe9 40%, transparent 100%),
+        url('./assets/hero-image.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.bg-image-courses {
+    background: linear-gradient(90deg, #ba3826 60%, transparent 100%),
+        url('./assets/Banner-courses.png');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.bg-image-course {
+    background: url('./assets/Circles.png') center no-repeat,
+        linear-gradient(90deg, #f8ebe9 60%, transparent 100%),
+        url('./assets/Banner-Image-course.png') right no-repeat;
+
+    background-size: cover;
+    object-fit: cover;
+}
+
+.bg-image-about-us {
+    background: url('./assets/Red-image.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.bg-image-contact-us {
+    background: url('./assets/Banner-Image.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+
+    &-circles {
+        background: url('./assets/Red-banner.jpg'), #ba3826;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        object-fit: cover;
+    }
+}
+
+.bg-image-create-account {
+    background: linear-gradient(270deg, #f8ebe9 40%, transparent 100%),
+        url('./assets/Create-Account.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.bg-image-book-course {
+    background: linear-gradient(270deg, #f8ebe9 40%, transparent 100%),
+        url('./assets/Book-a-form.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    object-fit: cover;
+}
+
+.image-right {
+    position: relative;
+    right: 4rem;
+
+    @media only screen and (max-width: 992px) {
+        position: relative;
+        right: 0;
+    }
+}
+
+.image-right-1 {
+    position: relative;
+    right: 4rem;
+    bottom: -6rem;
+
+    @media only screen and (max-width: 992px) {
+        position: relative;
+        right: 0;
+    }
+}
+
+.image-right-2 {
+    position: absolute;
+    left: 20rem;
+    bottom: -2rem;
+    @media only screen and (max-width: 1200px) {
+        left: 14rem;
+    }
+}
+
+.image-right-3 {
+    position: absolute;
+    top: 9rem;
+    left: 92rem;
+
+    @media only screen and (max-width: 1600px) {
+        top: 11rem;
+        left: 84rem;
+    }
+
+    @media only screen and (max-width: 1536px) {
+        top: 11rem;
+        left: 82rem;
+    }
+
+    @media only screen and (max-width: 1440px) {
+        left: 79rem;
+    }
+
+    @media only screen and (max-width: 1200px) {
+        top: 18rem;
+        left: 65rem;
+    }
+}
+
+.card-hover:hover {
+    border: 2px solid #ba3826;
+}
+
+.filter-hover:hover {
+    font-weight: 700;
+    text-decoration: underline;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}

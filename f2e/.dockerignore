@@ -1,0 +1,45 @@
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+
+#Ignore the logs directory
+logs/
+
+#Ignoring the password file
+passwords.txt
+.env
+*.rdb*
+*.db
+yarn.lock
+
+#Ignoring git and cache folders
+.git
+.cache
+.gitignore
+docker-compose.yml
+LICENSE
+VERSION
+README.md
+Changelog.md
+Makefile
+docs
+node_modules
+tmp/*
+!tmp/chromedriver
+tests
+ll_env
+migrations
+aerich.ini
+build
+
+#Ignoring all the markdown and class files
+*.md
+**/*.class
+
+
+
+
